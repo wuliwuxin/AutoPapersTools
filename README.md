@@ -47,21 +47,65 @@ pnpm run dev
 
 适合演示和个人使用，只支持前端功能。
 
+#### 自动部署步骤
+
+1. **配置 GitHub Pages**
+   - 进入 GitHub 仓库的 Settings → Pages
+   - Source 选择 "GitHub Actions"
+
+2. **推送代码触发部署**
+   ```bash
+   git push origin main
+   # GitHub Actions 会自动构建并部署到 GitHub Pages
+   ```
+
+3. **访问应用**
+   - 部署完成后访问：`https://wuliwuxin.github.io/AutoPapersTools/`
+   - 首次部署可能需要等待 1-2 分钟
+
+#### 本地测试 GitHub Pages 构建
+
+在推送到 GitHub 之前，可以在本地测试构建：
+
 ```bash
-git push origin main
-# GitHub Actions 会自动部署到 GitHub Pages
+# 使用 GitHub Pages 配置构建
+pnpm run build:gh-pages
+
+# 使用本地服务器测试（需要安装 Python）
+cd dist/public
+python3 -m http.server 8000
+
+# 访问 http://localhost:8000/AutoPapersTools/
 ```
 
-访问：`https://你的用户名.github.io/ts_analysis_hub/`
+#### 技术说明
 
-**可用功能：**
-- ✅ 上传本地论文
-- ✅ AI 分析（需用户自己的 API 密钥）
+- 使用 **Hash 路由**（URL 格式：`#/papers`）以支持客户端路由
+- 所有静态资源使用 `/AutoPapersTools/` 作为基础路径
+- GitHub Actions 自动化构建和部署流程
 
-**不可用功能：**
-- ❌ 用户注册/登录
-- ❌ 从 arXiv 获取论文
-- ❌ 保存历史记录
+#### 可用功能
+
+- ✅ 上传本地论文（使用浏览器本地存储）
+- ✅ AI 分析（需用户提供自己的 API 密钥）
+- ✅ 浏览和搜索论文（本地数据）
+
+#### 不可用功能
+
+- ❌ 用户注册/登录（需要后端 API）
+- ❌ 从 arXiv 获取论文（需要后端 API）
+- ❌ 保存历史记录到数据库（需要后端 API）
+
+#### 常见问题
+
+**Q: 为什么 URL 中有 `#` 符号？**  
+A: GitHub Pages 不支持服务器端路由重写，使用 Hash 路由可以避免 404 错误。
+
+**Q: 如何更新部署？**  
+A: 只需推送代码到 main 分支，GitHub Actions 会自动重新构建和部署。
+
+**Q: 部署失败怎么办？**  
+A: 检查 GitHub Actions 的日志（Actions 标签页），查看具体错误信息。
 
 ### 方案 2：Vercel + PlanetScale（免费，完整功能）
 

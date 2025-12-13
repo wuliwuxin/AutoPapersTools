@@ -13,8 +13,8 @@ const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(
 
 export default defineConfig({
   plugins,
-  // GitHub Pages 部署时设置 base 路径（根据你的仓库名修改）
-  base: isGitHubPages ? "/ts_analysis_hub/" : "/",
+  // GitHub Pages 部署时设置 base 路径（根据实际仓库名 AutoPapersTools）
+  base: isGitHubPages ? "/AutoPapersTools/" : "/",
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),

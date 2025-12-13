@@ -8,6 +8,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, ArrowLeft, CheckCircle, AlertCircle, Brain, Settings, AlertTriangle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { StaticDeploymentBanner } from "@/components/StaticDeploymentBanner";
+import { isGitHubPages } from "@/lib/env";
 
 // 预设搜索关键词 - 时间序列分析相关
 const PRESET_QUERIES = [
@@ -134,6 +136,10 @@ export default function FetchPapers() {
           <p className="text-muted-foreground mb-8">
             自动从arXiv数据库获取最新的时间序列分析论文，并生成AI驱动的深度分析报告
           </p>
+
+          {isGitHubPages() && (
+            <StaticDeploymentBanner feature="从 arXiv 获取论文" />
+          )}
 
           <Card className="mb-8">
             <CardHeader>

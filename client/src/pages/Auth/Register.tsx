@@ -11,6 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
+import { StaticDeploymentBanner } from '@/components/StaticDeploymentBanner';
+import { isGitHubPages } from '@/lib/env';
 
 export function Register() {
   const [name, setName] = useState('');
@@ -73,6 +75,11 @@ export function Register() {
             Create a new account to get started
           </CardDescription>
         </CardHeader>
+        {isGitHubPages() && (
+          <div className="px-6">
+            <StaticDeploymentBanner feature="用户注册" />
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">

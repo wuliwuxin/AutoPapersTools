@@ -1,7 +1,8 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, Router } from "wouter";
+import { useHashLocation } from "wouter/use-hash-location";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -16,7 +17,7 @@ import { Register } from "./pages/Auth/Register";
 import UserProfile from "./pages/UserProfile";
 import UploadPaper from "./pages/UploadPaper";
 
-function Router() {
+function Routes() {
   return (
     <Switch>
       <Route path="/login" component={Login} />
@@ -75,7 +76,10 @@ function App() {
         <AuthProvider>
           <TooltipProvider>
             <Toaster />
-            <Router />
+            {/* 使用 hash 路由以支持 GitHub Pages 静态部署 */}
+            <Router hook={useHashLocation}>
+              <Routes />
+            </Router>
           </TooltipProvider>
         </AuthProvider>
       </ThemeProvider>
