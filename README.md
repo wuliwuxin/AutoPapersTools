@@ -43,109 +43,75 @@ pnpm run dev
 
 ## 📦 部署
 
-### 方案 1：GitHub Pages（免费，功能受限）
+### 🎯 推荐方案：Vercel (前端) + Railway (后端)
 
-适合演示和个人使用，只支持前端功能。
+这是最佳部署方案，提供完整功能和最佳性能。
 
-#### 自动部署步骤
+#### ⚡ 5 分钟快速部署
 
-1. **配置 GitHub Pages**
-   - 进入 GitHub 仓库的 Settings → Pages
-   - Source 选择 "GitHub Actions"
-
-2. **推送代码触发部署**
-   ```bash
-   git push origin main
-   # GitHub Actions 会自动构建并部署到 GitHub Pages
-   ```
-
-3. **访问应用**
-   - 部署完成后访问：`https://wuliwuxin.github.io/AutoPapersTools/`
-   - 首次部署可能需要等待 1-2 分钟
-
-#### 本地测试 GitHub Pages 构建
-
-在推送到 GitHub 之前，可以在本地测试构建：
+查看详细指南：**[QUICK_DEPLOY_RAILWAY.md](./QUICK_DEPLOY_RAILWAY.md)**
 
 ```bash
-# 使用 GitHub Pages 配置构建
-pnpm run build:gh-pages
+# 1. 部署后端到 Railway
+npm install -g @railway/cli
+railway login
+railway init
+railway variables set NODE_ENV=production
+railway variables set JWT_SECRET=8db1ea44c4904b772127d241a5d3dabea273c51b6605c9e39e515d1d344dbf6f
+railway variables set ENCRYPTION_KEY=kPaSUwAgZee2JcSTbLfyjqUTBu2GWrfVLis77ffNovQ=
+railway up
+railway domain create
 
-# 使用本地服务器测试（需要安装 Python）
-cd dist/public
-python3 -m http.server 8000
+# 2. 在 Vercel 中添加环境变量
+# VITE_API_URL = https://your-railway-app.up.railway.app
 
-# 访问 http://localhost:8000/AutoPapersTools/
-```
-
-#### 技术说明
-
-- 使用 **Hash 路由**（URL 格式：`#/papers`）以支持客户端路由
-- 所有静态资源使用 `/AutoPapersTools/` 作为基础路径
-- GitHub Actions 自动化构建和部署流程
-
-#### 可用功能
-
-- ✅ 上传本地论文（使用浏览器本地存储）
-- ✅ AI 分析（需用户提供自己的 API 密钥）
-- ✅ 浏览和搜索论文（本地数据）
-
-#### 不可用功能
-
-- ❌ 用户注册/登录（需要后端 API）
-- ❌ 从 arXiv 获取论文（需要后端 API）
-- ❌ 保存历史记录到数据库（需要后端 API）
-
-#### 常见问题
-
-**Q: 为什么 URL 中有 `#` 符号？**  
-A: GitHub Pages 不支持服务器端路由重写，使用 Hash 路由可以避免 404 错误。
-
-**Q: 如何更新部署？**  
-A: 只需推送代码到 main 分支，GitHub Actions 会自动重新构建和部署。
-
-**Q: 部署失败怎么办？**  
-A: 检查 GitHub Actions 的日志（Actions 标签页），查看具体错误信息。
-
-### 方案 2：Vercel（免费，完整功能）⭐ 推荐
-
-支持所有功能，包括后端 API 和数据库。
-
-#### 快速部署
-
-```bash
-# 1. 安装 Vercel CLI
-npm install -g vercel
-
-# 2. 登录 Vercel
-vercel login
-
-# 3. 部署
-vercel
-
-# 4. 生产部署
+# 3. 重新部署 Vercel
 vercel --prod
 ```
 
-#### 配置环境变量
+#### ✅ 功能对比
 
-在 Vercel Dashboard → Settings → Environment Variables 中添加：
+| 功能 | GitHub Pages | Vercel + Railway |
+|------|-------------|------------------|
+| 前端界面 | ✅ | ✅ |
+| 用户注册/登录 | ❌ | ✅ |
+| 从 arXiv 获取论文 | ❌ | ✅ |
+| 数据持久化 | ❌ | ✅ |
+| AI 分析 | ✅ | ✅ |
+| 完整后端 API | ❌ | ✅ |
 
-```bash
-# 数据库（可选，不配置则使用内存模式）
-DATABASE_URL=mysql://user:password@host:3306/database
+#### 📚 详细部署文档
 
-# JWT 密钥（必需，随机生成）
-JWT_SECRET=your-random-secret-key-here
+- **[完整部署指南](./DEPLOYMENT_COMPLETE.md)** - 详细步骤和故障排除
+- **[快速部署](./QUICK_DEPLOY_RAILWAY.md)** - 5 分钟快速上手
+- **[Railway 部署](./RAILWAY_DEPLOYMENT.md)** - Railway 详细配置
+- **[Vercel 部署](./VERCEL_DEPLOYMENT.md)** - Vercel 详细配置
+- **[部署选项说明](./DEPLOYMENT_OPTIONS.md)** - 各种部署方案对比
 
-# 加密密钥（必需，32字节随机字符串）
-ENCRYPTION_KEY=your-32-byte-encryption-key-here
+### 方案 1：GitHub Pages（仅前端演示）
 
-# DeepSeek API（可选）
-DEEPSEEK_API_KEY=sk-your-api-key
-```
+适合快速演示，但功能受限（无后端 API）。
 
-#### 生成密钥
+#### 自动部署
+
+1. 进入 GitHub 仓库 Settings → Pages
+2. Source 选择 "GitHub Actions"
+3. 推送代码到 main 分支自动部署
+
+访问：`https://wuliwuxin.github.io/AutoPapersTools/`
+
+**限制：** 无用户系统、无法从 arXiv 获取论文、无数据持久化
+
+### 方案 2：仅 Vercel（不推荐）
+
+Vercel Serverless Functions 对 Express + tRPC 应用支持有限：
+- ❌ 10 秒超时限制
+- ❌ 连接池问题
+- ❌ 冷启动慢
+
+**建议使用 Vercel + Railway 方案获得最佳体验。**
+
+### 环境变量说明
 
 ```bash
 # 生成 JWT_SECRET
