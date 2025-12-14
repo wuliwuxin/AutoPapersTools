@@ -1,8 +1,8 @@
-import "dotenv/config";
-import express from "express";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { appRouter } from "../server/routers";
 import { createContext } from "../server/_core/context";
+import express from "express";
 
 const app = express();
 
@@ -24,4 +24,7 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-export default app;
+// Export for Vercel Serverless
+export default (req: VercelRequest, res: VercelResponse) => {
+  return app(req as any, res as any);
+};
