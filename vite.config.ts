@@ -13,7 +13,7 @@ const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(
 
 export default defineConfig({
   plugins,
-  // GitHub Pages 部署时设置 base 路径（根据实际仓库名 AutoPapersTools）
+  // GitHub Pages 部署时设置 base 路径，Vercel 使用根路径
   base: isGitHubPages ? "/AutoPapersTools/" : "/",
   resolve: {
     alias: {

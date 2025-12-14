@@ -7,6 +7,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { isGitHubPages } from "./lib/env";
 import Home from "./pages/Home";
 import PapersList from "./pages/PapersList";
 import PaperDetail from "./pages/PaperDetail";
@@ -67,6 +68,9 @@ function Routes() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
+  // 在 GitHub Pages 使用 hash 路由，在 Vercel 使用正常路由
+  const useGitHubPagesRouting = isGitHubPages();
+
   return (
     <ErrorBoundary>
       <ThemeProvider
@@ -76,10 +80,17 @@ function App() {
         <AuthProvider>
           <TooltipProvider>
             <Toaster />
-            {/* 使用 hash 路由以支持 GitHub Pages 静态部署 */}
-            <Router hook={useHashLocation}>
-              <Routes />
-            </Router>
+            {useGitHubPagesRouting ? (
+              // GitHub Pages: 使用 hash 路由
+              <Router hook={useHashLocation}>
+                <Routes />
+              </Router>
+            ) : (
+              // Vercel/其他平台: 使用正常路由
+              <Router>
+                <Routes />
+              </Router>
+            )}
           </TooltipProvider>
         </AuthProvider>
       </ThemeProvider>

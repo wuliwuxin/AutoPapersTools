@@ -107,24 +107,57 @@ A: 只需推送代码到 main 分支，GitHub Actions 会自动重新构建和�
 **Q: 部署失败怎么办？**  
 A: 检查 GitHub Actions 的日志（Actions 标签页），查看具体错误信息。
 
-### 方案 2：Vercel + PlanetScale（免费，完整功能）
+### 方案 2：Vercel（免费，完整功能）⭐ 推荐
 
-推荐方案，支持所有功能。
+支持所有功能，包括后端 API 和数据库。
+
+#### 快速部署
 
 ```bash
-# 安装 Vercel CLI
+# 1. 安装 Vercel CLI
 npm install -g vercel
 
-# 部署
+# 2. 登录 Vercel
+vercel login
+
+# 3. 部署
 vercel
 
-# 配置环境变量（在 Vercel Dashboard）
-# - DATABASE_URL
-# - JWT_SECRET
-# - ENCRYPTION_KEY
+# 4. 生产部署
+vercel --prod
 ```
 
-详细部署指南请查看 [GitHub部署方案.md](./GitHub部署方案.md)
+#### 配置环境变量
+
+在 Vercel Dashboard → Settings → Environment Variables 中添加：
+
+```bash
+# 数据库（可选，不配置则使用内存模式）
+DATABASE_URL=mysql://user:password@host:3306/database
+
+# JWT 密钥（必需，随机生成）
+JWT_SECRET=your-random-secret-key-here
+
+# 加密密钥（必需，32字节随机字符串）
+ENCRYPTION_KEY=your-32-byte-encryption-key-here
+
+# DeepSeek API（可选）
+DEEPSEEK_API_KEY=sk-your-api-key
+```
+
+#### 生成密钥
+
+```bash
+# 生成 JWT_SECRET
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# 生成 ENCRYPTION_KEY
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+部署完成后，你会获得一个 Vercel 域名：`https://your-project.vercel.app`
+
+详细部署指南请查看 [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## 🛠️ 技术栈
 
@@ -241,8 +274,3 @@ MIT License
 - [DeepSeek](https://www.deepseek.com/) - AI 分析引擎
 - [Shadcn UI](https://ui.shadcn.com/) - UI 组件库
 
----
-
-**开发者：** 吴鑫武  
-**邮箱：** wu1351658806@163.com  
-**项目地址：** https://github.com/你的用户名/ts_analysis_hub
